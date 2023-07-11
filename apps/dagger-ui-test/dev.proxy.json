@@ -1,0 +1,6 @@
+{
+  "/dagger-ui-backend": {
+    "target": "http://localhost:3000",
+    "pathRewrite": {"^/dagger-ui-backend" :  ""}
+  }
+}
