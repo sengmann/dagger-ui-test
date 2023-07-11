@@ -1,0 +1,64 @@
+{
+  "name": "dagger-ui-backend",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/dagger-ui-backend/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/dagger-ui-backend",
+        "main": "apps/dagger-ui-backend/src/main.ts",
+        "tsConfig": "apps/dagger-ui-backend/tsconfig.app.json",
+        "assets": ["apps/dagger-ui-backend/src/assets"],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/dagger-ui-backend/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "dagger-ui-backend:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "dagger-ui-backend:build:development"
+        },
+        "production": {
+          "buildTarget": "dagger-ui-backend:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/dagger-ui-backend/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/dagger-ui-backend/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}
