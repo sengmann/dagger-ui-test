@@ -1,0 +1,26 @@
+version: '3.7'
+services:
+
+  frontend:
+    image: sirion182/dagger-ui-test:latest
+    hostname: dagger-ui
+    container_name: dagger-ui
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+    networks:
+      - default
+    environment:
+      - "BACKEND_URI=http://dagger-ui-backend:3000"
+
+  backend:
+    image: sirion182/dagger-ui-backend:latest
+    hostname: dagger-ui-backend
+    container_name: dagger-ui-backend
+    networks:
+      - default
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"

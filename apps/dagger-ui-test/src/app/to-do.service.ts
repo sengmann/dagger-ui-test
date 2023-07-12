@@ -15,7 +15,7 @@ export class ToDoService {
 
   getToDos() {
     if (this.hasLoaded === false) {
-      this.httpClient.get<ToDo[]>('dagger-ui-backend/api').subscribe(result => {
+      this.httpClient.get<ToDo[]>('dagger-ui-backend/todo').subscribe(result => {
         this.#toDos.set(result)
         this.hasLoaded = true
       })
