@@ -1,4 +1,9 @@
-import Client, { Container, Directory, File, connect } from '@dagger.io/dagger'
+import Client, {Container, Directory, connect} from '@dagger.io/dagger'
+import {parse} from 'ts-command-line-args'
+
+const args = parse({
+  'docker-prefix': {type: String, alias: 'p', defaultValue: 'sirion182'},
+})
 
 connect(async (client: Client) => {
   const builder = createBuilderContainer(client)
@@ -10,14 +15,17 @@ connect(async (client: Client) => {
   const buildBackend = builder
     .pipeline('build backend')
     .withExec(['npx', 'nx', 'build', 'dagger-ui-backend'])
-    .withExec(['cp', 'package.json', 'package-lock.json', 'decorate-angular-cli.js', 'dist/apps/dagger-ui-backend'])
 
   const nestJSRunner = nestJsBuilder(client, buildBackend.directory('dist/apps/dagger-ui-backend'))
 
   const angularRunner = angularContainer(client, builderFrontend.directory('dist/apps/dagger-ui-test'), 'dagger-ui-backend')
 
-  await nestJSRunner.publish('sirion182/dagger-ui-backend:latest')
-  await angularRunner.publish('sirion182/dagger-ui-test')
+  const publish = Promise.all([
+    nestJSRunner.publish(`${args["docker-prefix"]}/dagger-ui-backend:latest`),
+    angularRunner.publish(`${args["docker-prefix"]}/dagger-ui-test`),
+  ])
+
+  await publish
 }, { LogOutput: process.stdout })
 
 

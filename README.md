@@ -19,11 +19,35 @@ containers. Deployment could be done with docker compose. See the deployment-com
    npm install
    ```
 2. ```shell
-   dagger run npx ts-node --esm --project dagger/tsconfig.json dagger/build.mts
+   dagger run npx ts-node --esm --project dagger/tsconfig.json dagger/build.mts --docker-prefix=your-registry
    ```
 3. ```shell
    docker compose -f deployment-compose.yaml up
    ```
 4. open [localhost:8080](http://localhost:8080)
 
+## Builder Arguments
 
+So far one argument can be passed to the `build.mts`
+
+1. **docker-prefix (p)** : docker registry that you want to push into
+
+Example:
+```shell
+#publish to dockerhub sirion182
+dagger run npx ts-node --esm --project dagger/tsconfig.json dagger/build.mts --docker-prefix=sirion182
+```
+
+## Next possible steps
+
+- add test execution into pipeline
+- use containers to execute e2e tests
+- add Kubernetes deployment example
+- improve command line arguments
+  - choose project to build
+  - add [usage hints](https://www.npmjs.com/package/ts-command-line-args#user-content-usage-guide) 
+- utilize affected graph of nx
+- add example ci integration 
+  - Github Action
+  - Gitlab Pipeline
+- add Secret Handling
