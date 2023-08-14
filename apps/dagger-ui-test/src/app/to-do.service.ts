@@ -1,6 +1,6 @@
-import {computed, Injectable, signal} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {ToDo} from "@dagger-ui-test/shared";
+import { HttpClient } from "@angular/common/http";
+import { computed, Injectable, signal } from '@angular/core';
+import { ToDo } from "@dagger-ui-test/shared";
 
 @Injectable({
   providedIn: 'root'
@@ -8,18 +8,23 @@ import {ToDo} from "@dagger-ui-test/shared";
 export class ToDoService {
 
   #toDos = signal<ToDo[]>([])
-  hasLoaded = false;
+
+  hasLoaded = false
 
   constructor(private httpClient: HttpClient) {
   }
 
   getToDos() {
     if (this.hasLoaded === false) {
-      this.httpClient.get<ToDo[]>('dagger-ui-backend/todo').subscribe(result => {
-        this.#toDos.set(result)
-        this.hasLoaded = true
-      })
+      this.update()
     }
     return computed(() => this.#toDos());
+  }
+
+  update() {
+    this.httpClient.get<ToDo[]>('dagger-ui-backend/todo').subscribe(result => {
+      this.#toDos.set(result)
+      this.hasLoaded = true
+    })
   }
 }
