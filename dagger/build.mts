@@ -1,8 +1,8 @@
-import Client, {Container, Directory, connect} from '@dagger.io/dagger'
-import {parse} from 'ts-command-line-args'
+import { Client, Container, Directory, connect } from '@dagger.io/dagger'
+import { parse } from 'ts-command-line-args'
 
 const args = parse({
-  'docker-prefix': {type: String, alias: 'p', defaultValue: 'sirion182'},
+  'docker-prefix': { type: String, alias: 'p', defaultValue: 'sirion182' },
 })
 
 connect(async (client: Client) => {
@@ -40,11 +40,11 @@ connect(async (client: Client) => {
  */
 function createBuilderContainer(client: Client, localPath: string = '.', label: string = 'ci pipeline'): Container {
   const nodeCache = client.cacheVolume('node')
-  const src = client.host().directory(localPath, {exclude: ['node_modules']})
+  const src = client.host().directory(localPath, { exclude: ['node_modules'] })
 
   return client.container()
     .pipeline(label)
-    .from('node:20-alpine')
+    .from('node:18-alpine')
     .withMountedDirectory('/workdir', src)
     .withMountedCache('/workdir/node_modules', nodeCache)
     .withWorkdir('/workdir')
@@ -55,7 +55,7 @@ function createBuilderContainer(client: Client, localPath: string = '.', label: 
 function nestJsBuilder(client: Client, distDir: Directory, label: string = 'build NestJS Container'): Container {
   return client.container()
     .pipeline(label)
-    .from('node:20-alpine')
+    .from('node:18-alpine')
     .withDirectory('/nest', distDir)
     .withWorkdir('/nest')
     .withExec(['npm', 'ci', '--omit=dev', '--legacy-peer-deps'])
@@ -112,6 +112,6 @@ function angularContainer(client: Client, distDir: Directory, apiUrl?: string | 
   return client.container()
     .pipeline(label)
     .from('nginxinc/nginx-unprivileged:1.25.1-alpine')
-    .withNewFile('/etc/nginx/templates/default.conf.template', {contents: nginxConfig})
+    .withNewFile('/etc/nginx/templates/default.conf.template', { contents: nginxConfig })
     .withDirectory('/usr/share/nginx/html', distDir)
 }
